@@ -6,26 +6,6 @@ export default class Archetype {
 	}
 
 	// private
-
-	/**
-	 * instantiates a list of classes and stores
-	 * them in an object
-	 * 
-	 * @param {array} require 
-	 * the classes to instantiate and add to the
-	 * libraries object
-	 * 
-	 * @return {object}
-	 */
-	_getLibs (require) {
-		const libs = {};
-
-		require.forEach(req => {
-			if (req.match(/helper|helpers/)) libs[req] = new Helper();
-		});
-
-		return libs;
-	}
 	
 	/**
 	 * gets all methods associated with a class
@@ -40,10 +20,13 @@ export default class Archetype {
 		const methodTypes = {
 			// any method prefixed with $
 			loud : [],
+
 			// any methods prefixed with __
 			decorators : [],
+
 			// any methods with no symbolic prefix
 			quiet : [],
+
 			// sorts method types into the above categories and deletes itself
 			sort : function () {
 				methods.filter(method => {
@@ -249,17 +232,10 @@ export default class Archetype {
 			const proto = Object.getOwnPropertyNames(option instanceof Function ? option.prototype : option.scope.prototype),
 				instantiator = option instanceof Function ? option : option.scope;
 
-			// this.instanceHooks = instantiator.prototype.hooks = {};
-			// this.libs = {};
-
-			console.log(this);
-
 			if (proto.indexOf("route_") !== -1) {
 				const route = this._routeParams(instantiator.prototype.route_());
 
 				if (route.match) {	
-					// this._setProps("instanceHooks", "route", route);
-
 					this._makeProps("instance_proto", instantiator.prototype);
 
 					this._setProps("instance_proto", "route", route);
