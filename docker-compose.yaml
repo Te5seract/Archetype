@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  php:
+    build: ./
+    restart: unless-stopped
+    volumes:
+      - ./:/var/www/html
+      - ./.htaccess:/var/www/html/.htaccess
+    ports:
+      - 8003:80
+    container_name: archetype_php
+
+networks:
+  mysql_db_network:
+    external: true

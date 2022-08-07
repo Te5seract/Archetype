@@ -1,4 +1,9 @@
 node_modules
 *.css
 *.html
+*.php
 src/pages
+docker-compose.yaml
+docker-compose.yml
+Dockerfile
+/test

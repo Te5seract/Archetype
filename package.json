@@ -1,24 +1,19 @@
 {
-  "name": "js-design-pattern-idea-1",
+  "name": "archetype",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.html",
+  "description": "JS code encapsulation library to execute page specific JS",
+  "main": "src/index.js",
   "scripts": {
-    "start": "serve",
-    "build": "echo This is a static template, there is no bundler or bundling involved!"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/codesandbox-app/static-template.git"
+    "url": "git+https://github.com/Te5seract/Archetype.git"
   },
-  "keywords": [],
-  "author": "Ives van Hoorne",
-  "license": "MIT",
+  "author": "Isaac Astley (te5seract)",
+  "license": "ISC",
   "bugs": {
-    "url": "https://github.com/codesandbox-app/static-template/issues"
+    "url": "https://github.com/Te5seract/Archetype/issues"
   },
-  "homepage": "https://github.com/codesandbox-app/static-template#readme",
-  "devDependencies": {
-    "serve": "^11.2.0"
-  }
+  "homepage": "https://github.com/Te5seract/Archetype#readme"
 }
