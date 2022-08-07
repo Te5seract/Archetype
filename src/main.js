@@ -1,5 +1,5 @@
 // js auto-loader
-import Archetype from "./classes/Workspace.js";
+import Archetype from "./classes/Archetype.js";
 
 // helpers
 import Helper from "./classes/Helper.js";
