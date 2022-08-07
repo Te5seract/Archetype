@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+		<title>Test</title>
+
+		<link rel="stylesheet" type="text/css" href="src/css/style.css">
+
+		<script src="https://unpkg.com/@te5seract/xenium/dist/xenium.min.js"></script>
+		<script src="src/main.js" type="module" defer></script>
+	</head>
+	<body>
+		<nav class="navigation">
+			<ul>
+				<li>
+					<a href="/">Home</a>
+				</li>
+				<li>
+					<a href="/about.html">About</a>
+				</li>
+			</ul>
+		</nav>
+
+		<section class="page-content page-instructions">
+			<h1>Information</h1>
+
+			<div class="page-content__inner">
+
+				<article class="page-instructions__content">
+					<h2 class="ut-text-center">File Structure & Purpose</h2>
+					
+					<ul class="page-instructions__instructions">
+						<li>
+							<strong>src/main.js</strong> is the JS entry point. The Workspace class is instantiated there and passed
+							a bunch of other classes that relate to pages
+						</li>
+
+						<li>
+							<strong>src/classes/Workspace.js</strong> This class is instantiating classses and then running their 
+							methods based on method types and routing.
+						</li>
+
+						<li>
+							<strong>src/pages/*</strong> These are classes that correspond to HTML pages. In the files here there will be
+							a reference to my personal library Xenium:
+
+							<code>
+								x("@x-toggled").events("click", function () {});
+							</code>
+						</li>
+					</ul>
+				</article>
+
+				<article class="page-instructions__content">
+					<h2 class="ut-text-center">Decorators & Methods</h2>
+
+					<button x-toggled="false">Press This</button>
+
+					<p>
+						The button above turns red as a result of a decorator method test:
+
+						<br>
+
+						<code>
+							__button_colour () {
+								<br><br>
+							}
+						</code>
+
+						the __ signifies a decorator. This is decorating the following method
+
+						<code>
+							$button () {
+								<br><br>
+							}
+						</code>
+
+						Any method prefixed with a "$" is called automatically when the page 
+						is being loaded.
+					</p>
+				</article>
+			</div>
+		</section>
+	</body>
+</html>
