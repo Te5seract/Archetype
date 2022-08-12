@@ -2,6 +2,8 @@ export default class Archetype {
 	constructor (callback) {
 		this.callback = callback;
 
+        this.useGlobal = [];
+
 		this.callback ? this.callback() : null;
 	}
 
@@ -94,9 +96,10 @@ export default class Archetype {
 		method = method.replace(/\$/, "");
 
 		decorators.forEach(decorator => {
-			const decoratorNameFilter = this._decoratorName(decorator);
+			const decoratorNameFilter = this._decoratorName(decorator),
+                hasReturn = instance[decorator]() !== undefined;
 
-			list[decoratorNameFilter] = instance[decorator]();
+			list[decoratorNameFilter] = hasReturn ? instance[decorator]() : instance[decorator];
 		});
 
 		return;
@@ -179,10 +182,43 @@ export default class Archetype {
 		return info;
 	}
 
+    /**
+     * creates a property that will be stored in
+     * the Archetype instance
+     *
+     * @param {string} key
+     * the key to the property stored
+     *
+     * @param {any} value
+     * the value to give the property
+     *
+     * @return {void}
+    */
 	_makeProps (key, value) {
 		this[key] = value;
+
+        return;
 	}
 
+    /**
+     * adds properties to a stored property in the
+     * Archetype instance
+     *
+     * @param {string} key
+     * the key for the property to target
+     *
+     * @param {array} ...values
+     * a structure of items to add to a stored property
+     * the last item being the value, eg:
+     *
+     * "setProperty", "subProperty", "value"
+     *
+     * setProperty : {
+     *     subProperty : "value"
+     * }
+     *
+     * @return {void}
+    */
 	_setProps (key, ...values) {
 		if (this[key]) {
 			let prop = this[key];
@@ -201,7 +237,121 @@ export default class Archetype {
 				}
 			}
 		}
+
+        return;
 	}
+
+    /**
+     * gets a stored value within the Archetype instance
+     *
+     * @param {string} key
+     * the stored value key
+     *
+     * @param {array} [...dir]
+     * where to find the value you're looking for
+     *
+     * @return {any}
+    */
+    _getProps (key, ...dir) {
+        if (!dir.length) return this[key];
+
+        let prop = this[key];
+
+        dir.forEach(dir => {
+            if (prop[dir]) prop = prop[dir];
+            else {
+                console.warn(`_getProps error: ${dir} in ${key} was not found.`);
+                return;
+            }
+        });
+
+        return prop;
+    }
+
+    /**
+     * uses certain components or libraries, if the use_() method
+     * within a class module returns some libraries or components
+     * those libraries and or components will be merged into the
+     * class module
+     *
+     * @param {object} instantiator
+     * the instance of the class having props merged into it
+     *
+     * @param {object} option
+     * the options for this class instance, looking for the "use" key
+     *
+     * @return {void}
+    */
+    _use (instantiator, option) {
+        const methods = Object.getOwnPropertyNames(instantiator.prototype).join(","),
+            method = this._getMethod(instantiator, "use_", "uses_"),
+            use = option.use,
+            useInstances = {};
+
+        if (!method) return;
+
+        if (!use) return; 
+
+        if (this.useGlobal.length) {
+            this.useGlobal.forEach(item => {
+                use.push(item);
+            });
+        }
+
+        use.forEach(use => {
+            for (let key in use) {
+                useInstances[key] = use[key];
+            }
+        });
+
+        const useMethod = instantiator.prototype[method](useInstances);
+
+        if (!useMethod) return;
+
+        useMethod.forEach(ext => {
+            // merge all methods from a class
+            if (ext.prototype) {
+                const extMethods = Object.getOwnPropertyNames(ext.prototype);
+
+                extMethods.forEach(method => {
+                    instantiator.prototype[method] = ext.prototype[method];
+                });
+            } else {
+                // merge only a select few methods into the class
+                if (ext.methods && ext.scope) {
+                    ext.methods.forEach(method => {
+                        instantiator.prototype[method] = ext.scope.prototype[method];
+                    });
+                }
+            }
+        });
+
+        return;
+    }
+
+    /**
+     * checks if the instantiated class has a particular action
+     * method
+     *
+     * @param {object} instantiator
+     * the class instance to check methods for
+     *
+     * @param {array} ...methods
+     * the methods to match from the class instance
+     *
+     * @return {boolean|string}
+    */
+    _getMethod (instantiator, ...methods) {
+        const instanceMethods = Object.getOwnPropertyNames(instantiator.prototype),
+            instanceMethodsString = instanceMethods.join(","),
+            methodsString = methods.join("|"),
+            methodReg = new RegExp(methodsString, "gi"),
+            match = instanceMethodsString.match(methodReg);
+
+        if (!match) return false;
+
+        return match[0];
+    }
 
 	// public
 
@@ -240,6 +390,8 @@ export default class Archetype {
 
 					this._setProps("instance_proto", "route", route);
 
+                    this._use(instantiator, option);
+
 					const instance = new instantiator(),
 						methods = this._getMethodTypes(Object.getOwnPropertyNames(Object.getPrototypeOf(instance)));
 
@@ -252,5 +404,22 @@ export default class Archetype {
 		return this;
 	}
 
-	with () {}
+    /**
+     * globally applies libraries and components to all
+     * page instances
+     *
+     * @param {array} options
+     * what libraries and components to load within objects, eg:
+     *
+     * {key : name}
+    */
+    use (options) {
+        if (!options.length) return;
+
+        this.useGlobal = options;
+
+        return this;
+    }
 }
+
+window.Archetype = Archetype;
