@@ -361,6 +361,22 @@ export default class Archetype {
         return match[0];
     }
 
+    /**
+     * sets Archetype methods for the page classes
+     *
+     * @param {object} instance
+     * the page class instance
+     *
+     * @return {void}
+    */
+    _setAccessors (instance) {
+        this._setProps("instance_proto", "get", (...dir) => {
+            return this._getProps("instance_proto", ...dir);
+        });
+
+        return;
+    }
+
 	// public
 
 	/**
@@ -413,12 +429,6 @@ export default class Archetype {
 
 		return this;
 	}
-
-    _setAccessors (instance) {
-        this._setProps("instance_proto", "get", (...dir) => {
-            return this._getProps("instance_proto", ...dir);
-        });
-    }
 
     /**
      * globally applies libraries and components to all
