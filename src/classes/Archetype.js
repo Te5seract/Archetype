@@ -155,8 +155,6 @@ export default class Archetype {
 	 * @return {object}
 	 */
 	_routeParams (route) {
-		if (!route.match(/{.*?}/g)) return route;
-
 		const path = window.location.pathname,
 			pathSplit = path.split("/"),
 			dynamicSlugs = route.match(/{.*?}/g),
@@ -166,6 +164,14 @@ export default class Archetype {
 				path : path,
 				params : {}
 			};
+
+        if (!route.match(/{.*?}/g)) {
+            const routeReg = new RegExp(`^${route}$`);
+
+            info.match = route === path;
+
+            return info;
+        }
 
 		dynamicSlugs.forEach(slug => {
 			const index = routeSplit.indexOf(slug),
@@ -255,12 +261,14 @@ export default class Archetype {
     _getProps (key, ...dir) {
         if (!dir.length) return this[key];
 
+        const start = this[key];
+
         let prop = this[key];
 
         dir.forEach(dir => {
             if (prop[dir]) prop = prop[dir];
             else {
-                console.warn(`_getProps error: ${dir} in ${key} was not found.`);
+                console.error(`_getProps error: ${dir.join(" > ")} in "${start.constructor.name}" was not found: ${start.constructor.name}`, start);
                 return;
             }
         });
@@ -385,12 +393,14 @@ export default class Archetype {
 			if (proto.indexOf("route_") !== -1) {
 				const route = this._routeParams(instantiator.prototype.route_());
 
-				if (route.match) {	
+				if (route.match) {
 					this._makeProps("instance_proto", instantiator.prototype);
 
 					this._setProps("instance_proto", "route", route);
 
                     this._use(instantiator, option);
+
+                    this._setAccessors(instantiator);
 
 					const instance = new instantiator(),
 						methods = this._getMethodTypes(Object.getOwnPropertyNames(Object.getPrototypeOf(instance)));
@@ -403,6 +413,12 @@ export default class Archetype {
 
 		return this;
 	}
+
+    _setAccessors (instance) {
+        this._setProps("instance_proto", "get", (...dir) => {
+            return this._getProps("instance_proto", ...dir);
+        });
+    }
 
     /**
      * globally applies libraries and components to all
