@@ -1,6 +1,6 @@
 {
   "name": "archetype",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "JS code encapsulation library to execute page specific JS",
   "main": "./src/index.js",
   "scripts": {

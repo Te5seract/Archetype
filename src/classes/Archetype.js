@@ -96,10 +96,9 @@ export default class Archetype {
 		method = method.replace(/\$/, "");
 
 		decorators.forEach(decorator => {
-			const decoratorNameFilter = this._decoratorName(decorator),
-                hasReturn = instance[decorator]() !== undefined;
+			const decoratorNameFilter = this._decoratorName(decorator);
 
-			list[decoratorNameFilter] = hasReturn ? instance[decorator]() : instance[decorator];
+            list[decoratorNameFilter] = instance[decorator];
 		});
 
 		return;
@@ -154,38 +153,55 @@ export default class Archetype {
 	 * 
 	 * @return {object}
 	 */
-	_routeParams (route) {
-		const path = window.location.pathname,
-			pathSplit = path.split("/"),
-			dynamicSlugs = route.match(/{.*?}/g),
-			routeSplit = route.split("/"),
-			info = {
-				route : route,
-				path : path,
-				params : {}
-			};
+	_routeParams (routes) {
+        const info = {
+            params : {}
+        };
 
-        if (!route.match(/{.*?}/g)) {
-            const routeReg = new RegExp(`^${route}$`);
+        if (!(routes instanceof Array)) routes = [routes];
 
-            info.match = route === path;
+        for (let i = 0; i < routes.length; i++) {
+            const path = window.location.pathname,
+                pathSplit = path.split("/"),
+                dynamicSlugs = routes[i].match(/{.*?}/g),
+                routeSplit = routes[i].split("/");
 
-            return info;
+            if (!routes[i].match(/{.*?}/g)) {
+                const routeReg = new RegExp(`^${routes[i]}$`);
+
+                //info.match = routes[i] === path;
+
+                if (routes[i] === path) {
+                    info.match = true;
+                    return info;
+                }
+            } else {
+
+                dynamicSlugs.forEach(slug => {
+                    const index = routeSplit.indexOf(slug),
+                        slugFiltered = slug.replace(/{|}/g, "");
+
+                    routeSplit[index] = pathSplit[index];
+
+                    info.params[slugFiltered] = pathSplit[index];
+                });
+
+                //info.routeProcessed = routeSplit.join("/");
+                //info.match = path === routeSplit.join("/");
+
+                if (path === routeSplit.join("/")) {
+                    info.match = true;
+                    info.routeProcessed = routeSplit.join("/");
+
+                    return info;
+                }
+
+                //route : route,
+                //path : path,
+            }
         }
 
-		dynamicSlugs.forEach(slug => {
-			const index = routeSplit.indexOf(slug),
-				slugFiltered = slug.replace(/{|}/g, "");
-
-			routeSplit[index] = pathSplit[index];
-
-			info.params[slugFiltered] = pathSplit[index];
-		});
-
-		info.routeProcessed = routeSplit.join("/");
-		info.match = path === routeSplit.join("/");
-
-		return info;
+        return info;
 	}
 
     /**
