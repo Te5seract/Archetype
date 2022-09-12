@@ -318,8 +318,6 @@ export default class Archetype {
 
             if (!option.use && globalUse.length) {
                 option.use = globalUse;
-            } else {
-                option.use += globalUse;
             }
         }
 
