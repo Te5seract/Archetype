@@ -321,6 +321,10 @@ export default class Archetype {
             }
         }
 
+        if (!option.use) {
+            option.use = [];
+        }
+
         if (!method) return;
 
         if (this.useGlobal.length) {
