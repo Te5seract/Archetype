@@ -309,20 +309,29 @@ export default class Archetype {
     _use (instantiator, option) {
         const methods = Object.getOwnPropertyNames(instantiator.prototype).join(","),
             method = this._getMethod(instantiator, "use_", "uses_"),
-            use = option.use,
+            globalUse = this.useGlobal,
             useInstances = {};
+
+
+        if (option instanceof Function) {
+            option = { scope : option };
+
+            if (!option.use && globalUse.length) {
+                option.use = globalUse;
+            } else {
+                option.use += globalUse;
+            }
+        }
 
         if (!method) return;
 
-        if (!use) return; 
-
         if (this.useGlobal.length) {
             this.useGlobal.forEach(item => {
-                use.push(item);
+                option.use.push(item);
             });
         }
 
-        use.forEach(use => {
+        option.use.forEach(use => {
             for (let key in use) {
                 useInstances[key] = use[key];
             }
