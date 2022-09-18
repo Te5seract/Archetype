@@ -404,6 +404,23 @@ export default class Archetype {
         return;
     }
 
+    /**
+     * instantiates all global classes and binds them to the
+     * currently instantiated page script
+     *
+     * @return {void}
+    */
+    _instantiate () {
+        this.instances.forEach(item => {
+            const instance = new item(),
+                methods = this._getMethodTypes(Object.getOwnPropertyNames(Object.getPrototypeOf(instance)));
+
+            this._setProps("instance_proto", instance.constructor.name, instance);
+
+            this._callMethods(instance, methods);
+        });
+    }
+
 	// public
 
 	/**
@@ -448,6 +465,8 @@ export default class Archetype {
 					const instance = new instantiator(),
 						methods = this._getMethodTypes(Object.getOwnPropertyNames(Object.getPrototypeOf(instance)));
 
+                    this._instantiate();
+
 					this._callMethods(instance, methods);
 				}
 
@@ -466,12 +485,7 @@ export default class Archetype {
      * @return {void}
     */
     instantiate (instances) {
-        instances.forEach(item => {
-            const instance = new item(),
-                methods = this._getMethodTypes(Object.getOwnPropertyNames(Object.getPrototypeOf(instance)));
-
-            this._callMethods(instance, methods);
-        });
+        this._makeProps("instances", instances);
     }
 
     /**
