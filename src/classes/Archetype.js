@@ -458,6 +458,23 @@ export default class Archetype {
 	}
 
     /**
+     * auto instantiates classes
+     *
+     * @param array instances
+     * the instances to instantiate
+     *
+     * @return {void}
+    */
+    instantiate (instances) {
+        instances.forEach(item => {
+            const instance = new item(),
+                methods = this._getMethodTypes(Object.getOwnPropertyNames(Object.getPrototypeOf(instance)));
+
+            this._callMethods(instance, methods);
+        });
+    }
+
+    /**
      * globally applies libraries and components to all
      * page instances
      *
