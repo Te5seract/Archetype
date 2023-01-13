@@ -161,44 +161,46 @@ export default class Archetype {
         if (!(routes instanceof Array)) routes = [routes];
 
         for (let i = 0; i < routes.length; i++) {
-            const path = window.location.pathname,
-                pathSplit = path.split("/"),
-                dynamicSlugs = routes[i].match(/{.*?}/g),
-                routeSplit = routes[i].split("/");
+			if (routes[i]) {
+				const path = window.location.pathname,
+					pathSplit = path.split("/"),
+					dynamicSlugs = routes[i].match(/{.*?}/g),
+					routeSplit = routes[i].split("/");
 
-            if (!routes[i].match(/{.*?}/g)) {
-                const routeReg = new RegExp(`^${routes[i]}$`);
+				if (!routes[i].match(/{.*?}/g)) {
+					const routeReg = new RegExp(`^${routes[i]}$`);
 
-                //info.match = routes[i] === path;
+					//info.match = routes[i] === path;
 
-                if (routes[i] === path) {
-                    info.match = true;
-                    return info;
-                }
-            } else {
+					if (routes[i] === path) {
+						info.match = true;
+						return info;
+					}
+				} else {
 
-                dynamicSlugs.forEach(slug => {
-                    const index = routeSplit.indexOf(slug),
-                        slugFiltered = slug.replace(/{|}/g, "");
+					dynamicSlugs.forEach(slug => {
+						const index = routeSplit.indexOf(slug),
+							slugFiltered = slug.replace(/{|}/g, "");
 
-                    routeSplit[index] = pathSplit[index];
+						routeSplit[index] = pathSplit[index];
 
-                    info.params[slugFiltered] = pathSplit[index];
-                });
+						info.params[slugFiltered] = pathSplit[index];
+					});
 
-                //info.routeProcessed = routeSplit.join("/");
-                //info.match = path === routeSplit.join("/");
+					//info.routeProcessed = routeSplit.join("/");
+					//info.match = path === routeSplit.join("/");
 
-                if (path === routeSplit.join("/")) {
-                    info.match = true;
-                    info.routeProcessed = routeSplit.join("/");
+					if (path === routeSplit.join("/")) {
+						info.match = true;
+						info.routeProcessed = routeSplit.join("/");
 
-                    return info;
-                }
+						return info;
+					}
 
-                //route : route,
-                //path : path,
-            }
+					//route : route,
+					//path : path,
+				}
+			}
         }
 
         return info;
