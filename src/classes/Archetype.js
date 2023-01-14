@@ -295,6 +295,33 @@ export default class Archetype {
     }
 
     /**
+     * this enables the ability to share globally used classes
+     * with onanother:
+     *
+     * {
+     *    helper : Helper, 
+     *    shareWith : [ Helper1, Helper2 ]
+     * }
+     *
+     * @return {void}
+    */
+    _shareWithInstance () {
+        const global = this.useGlobal;
+
+        global.forEach(item => {
+            if (item.shareWith) {
+                let keys = Object.keys(item);
+
+                const key = keys.filter(key => !key.match(/shareWith/i))[0];
+
+                item.shareWith.forEach(instance => {
+                    instance.prototype[key] = item[key];
+                });
+            }
+        });
+    }
+
+    /**
      * uses certain components or libraries, if the use_() method
      * within a class module returns some libraries or components
      * those libraries and or components will be merged into the
@@ -313,7 +340,6 @@ export default class Archetype {
             method = this._getMethod(instantiator, "use_", "uses_"),
             globalUse = this.useGlobal,
             useInstances = {};
-
 
         if (option instanceof Function) {
             option = { scope : option };
@@ -398,7 +424,7 @@ export default class Archetype {
      *
      * @return {void}
     */
-    _setAccessors (instance) {
+    _setAccessors () {
         this._setProps("instance_proto", "get", (...dir) => {
             return this._getProps("instance_proto", ...dir);
         });
@@ -413,6 +439,8 @@ export default class Archetype {
      * @return {void}
     */
     _instantiate () {
+        if (!this.instances) return;
+
         this.instances.forEach(item => {
             const instance = new item(),
                 methods = this._getMethodTypes(Object.getOwnPropertyNames(Object.getPrototypeOf(instance)));
@@ -503,6 +531,8 @@ export default class Archetype {
         if (!options.length) return;
 
         this.useGlobal = options;
+
+        this._shareWithInstance();
 
         return this;
     }
