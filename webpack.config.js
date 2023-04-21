@@ -1,18 +1,16 @@
-const path = require("path"),
-    webpack = require("webpack"),
-    TerserPlugin = require("terser-webpack-plugin");
+const path = require("path");
 
 module.exports = {
-    entry : "./src/index.js",
     mode : "production",
-    output : {
-        filename : "archetype.min.js",
-        path : path.resolve(__dirname, "dist")
+    entry : "./src/main.js",
+    devServer : {
+        static : {
+            directory : __dirname
+        },
+        port : 9000
     },
-    optimization : {
-        minimize : true,
-        minimizer : [
-            new TerserPlugin()
-        ]
+    output : {
+        filename : "incantation.min.js",
+        path : path.resolve(__dirname, "build")
     }
-}
+};

@@ -1,25 +1,15 @@
 {
-  "name": "@te5seract/archetype",
-  "version": "1.1.0",
-  "description": "JS code encapsulation library to execute page specific JS",
-  "main": "./src/index.js",
+  "name": "incantation",
+  "version": "1.0.0",
+  "description": "Incantation is a page scoping JS design pattern for development simplification.",
+  "main": "src/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx webpack build --config webpack.config.js"
+    "serve": "npx webpack serve"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Te5seract/Archetype.git"
-  },
-  "author": "Isaac Astley (te5seract)",
+  "author": "Isaac Astley",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Te5seract/Archetype/issues"
-  },
-  "homepage": "https://github.com/Te5seract/Archetype#readme",
   "devDependencies": {
-    "terser": "^5.14.2",
-    "webpack": "^5.74.0",
-    "webpack-cli": "^4.10.0"
+    "webpack-cli": "^5.0.1",
+    "webpack-dev-server": "^4.13.3"
   }
 }
