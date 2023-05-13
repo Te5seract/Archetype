@@ -1,1 +1,1 @@
-import "./classes/Incantation.js";
+import Archetype from "./classes/Archetype.js";
