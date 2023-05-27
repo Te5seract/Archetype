@@ -10,5 +10,11 @@ export default class Director {
 
 	#page (instance) {
 		const pageConfig = new PagesConfig(instance);
+
+        this.getter = pageConfig;
 	}
+
+    get () {
+        return this.getter.get();
+    }
 }

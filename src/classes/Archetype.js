@@ -9,9 +9,9 @@ import Provider from "./provider/Provider.js";
 
 export default class Archetype {
 	constructor () {
-		this.#pages();
-
 		this.provider = new Provider();
+
+		this.#pages();
 	}
 
 	#pages () {

@@ -15,6 +15,9 @@ export default class PagesConfig {
 			noroute : `Archetype Error: A page must include a route property in the config_ method's return value, ${ this.proto.constructor.name } is lacking this property.`
 		};
 
+        // dynamic
+        this.routes = [];
+
 		// kickoff
 		this.#hasConfig();
 	}
@@ -45,7 +48,13 @@ export default class PagesConfig {
 		}
 	}
 
+    /**
+    * gets the configuration object for the
+    * page class
+    *
+    * @return {object}
+    */
 	get () {
-		return this.instance.config_();
+		return this.instance.prototype.config_();
 	}
 }
