@@ -12,7 +12,8 @@ export default class PagesConfig {
 		this.proto = instance.prototype;
 		this.errors = {
 			noconfig : `Archetype Error: A page must have a config_ method "${ this.proto.constructor.name }" is lacking this method.`,
-			noroute : `Archetype Error: A page must include a route property in the config_ method's return value, ${ this.proto.constructor.name } is lacking this property.`
+			noroute : `Archetype Error: A page must include a route property in the config_ method's return value, ${ this.proto.constructor.name } is lacking this property.`,
+			configUndefined : `Archetype Error: The config for "${ this.proto.constructor.name }" does not return a config object.`
 		};
 
         // dynamic
@@ -32,6 +33,9 @@ export default class PagesConfig {
 	#hasConfig () {
 		if (!this.proto.config_) {
 			throw this.errors.noconfig;
+		}
+		else if (!this.proto.config_()) {
+			throw this.errors.configUndefined;
 		}
 
 		this.#hasRoute();
