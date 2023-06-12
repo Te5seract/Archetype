@@ -7,6 +7,7 @@ export default class Home {
 				"globals/Helper",
 				"constants/observer"
 			],
+
 			//require : [
 				//"constants/nav",
 			//],
@@ -23,6 +24,5 @@ export default class Home {
     }
 
 	$home () {
-		console.log(this);
 	}
 }

@@ -1,2 +1,3 @@
 # Archetype
-Created with CodeSandbox
+
+This is the private development repo for Archetype, welcome!

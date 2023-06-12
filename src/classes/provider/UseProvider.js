@@ -25,8 +25,6 @@ export default class UseProvider {
 			pageUseError : (pageConf, componentConf) => `Archetype Error: cannot use component "${ componentConf.name }" in page "${ pageConf.name }", component is already in use.`
 		}
 
-		console.log(this.all);
-
 		// kickoff
 		this.#init();
 	}
