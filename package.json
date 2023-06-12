@@ -10,7 +10,7 @@
         "build": "npx webpack --config webpack.config.js",
         "dev": "npx webpack --watch --config webpack.config.js",
 		"sass" : "sass --watch ./dev/css/main.scss:build/styles.min.css",
-        "start": "npx webpack serve && npm run dev"
+        "start": "npm run build && npx webpack serve && npm run dev"
     },
     "author": "Isaac Astley",
     "license": "ISC",
