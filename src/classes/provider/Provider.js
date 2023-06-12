@@ -1,63 +1,155 @@
-import PageProvider from "./PageProvider.js";
-import ConstantProvider from "./ConstantProvider.js";
-import ComponentProvider from "./ComponentProvider.js";
+import UseProvider from "./UseProvider.js";
+import RequireProvider from "./RequireProvider.js";
+import MergeProvider from "./MergeProvider.js";
 
 /**
 * @namespace Provider
 *
-* provides special provider classes to handle
-* the configuration requirements of a class
-*
-* author: Isaac Astley <isaacastley@live.com>
+* author: <isaacastley@live.com>
 */
 export default class Provider {
-	/**
-	* instantiates the PageProvider with options
-	* and returns the page provider
-	*
-	* @param {object} options.page
-	* the page class to send to the provider
-	*
-	* @param {object} options.configProps
-	* the page classes configuration props
-	*
-	* @param {object} options.components
-	* the components to pass to the provider 
-	* which will then be merged to the page
-	*
-	* @return {object}
-	*/
-    page (options) {
-        const componentProvider = this.#component(options),
-			pageProvider = new PageProvider(options);
+	constructor ({ reservoir, config }) {
+		// static
+		this.reservoir = reservoir;
+		this.config = config;
 
-		pageProvider["namedComponents"] = componentProvider.get();
-
-		return pageProvider;
-    }
-
-	/**
-	* instantiates the ConstantProvider with the
-	* constant instance and returns the constant provider
-	*
-	* @param {object} constant
-	* a constant class
-	*
-	* @return {object}
-	*/
-	constant (constant) {
-		return new ConstantProvider(constant);
+		this.#use();
+		this.#require();
+		this.#merge();
+		this.#execute();
 	}
 
-	// -- private methods
+	// -- protected methods
 
 	/**
-	* calls the component service for pages
-	* and returns it
-	*
-	* @return {object}
+	* includes other classes that can
+	* be instantiated with the new keyword
+	* these classes will either be aliased
+	* with a new name or if no name is provided
+	* the class name will be the constructor name
 	*/
-	#component (options) {
-		return new ComponentProvider(options);
+	#use () {
+		const useProv = new UseProvider({
+			reservoir : this.reservoir,
+			config : this.config,
+			provider : this
+		});
+	}
+
+	/**
+	* requires in the class prototype, no instantiation
+	* namespacing is still done via the class' alias
+	* or the constructor name
+	*/
+	#require () {
+		const requireProv = new RequireProvider({
+			reservoir : this.reservoir,
+			config : this.config,
+			provider : this
+		});
+	}
+
+	/**
+	* merges a class prototype into another
+	* class, no instantiation or namespacing
+	* happens in this case
+	*/
+	#merge () {
+		const mergeProv = new MergeProvider({
+			reservoir : this.reservoir,
+			config : this.config,
+			provider : this
+		});
+	}
+
+	/**
+	* executes all methods prefixed with $
+	*
+	* @param {object} instance
+	* the executed class instance
+	*
+	* @param {array} methods
+	* the methods that belong to the 
+	* prototype of the non-executed
+	* version of the instance
+	*
+	* @return {void}
+	*/
+	#$exec (instance, methods) {
+		const $methods = methods.filter(method => method.match(/^\$\w+/g));
+
+		$methods.forEach(method => {
+			instance[method]();
+		});
+	}
+
+	/**
+	* executes constant classes and a page class
+	*
+	* @return {void}
+	*/
+	#execute () {
+		const page = this.reservoir.get("page"),
+			constants = this.reservoir.get("constants"),
+			components = this.reservoir.get("components"),
+			globals = this.reservoir.get("globals");
+
+		constants.forEach(constant => {
+			const methods = Object.getOwnPropertyNames(constant.prototype),
+				constInstance = new constant();
+
+			this.#$exec(constInstance, methods);
+		});
+
+		if (!page) return;
+
+		const pageMethods = Object.getOwnPropertyNames(page.prototype),
+			pageInstance = new page();
+
+		this.#$exec(pageInstance, pageMethods);
+	}
+
+	// -- public methods
+
+	/**
+	* gets the instance from a use or merge directory
+	*
+	* @param {string} use
+	* the directory string
+	*
+	* @return {object|null}
+	*/
+	getDir (use) {
+		const split = use.split("/");
+
+		let last;
+
+		split.forEach(dir => {
+			last = last ? last.get(dir) : this.reservoir.get(dir);
+		});
+
+		return last ? { 
+			instance : last,
+			config : last.prototype.config_()
+		} : null;
+	}
+
+	/**
+	* escapes regular expression sensitive characters
+	*
+	* @param {string} value
+	* the string to escape
+	*
+	* @return {void|string}
+	*/
+	regEsc (value) {
+		if (!value) return;
+
+		value = value.replace(/\$/g, "\\$");
+		value = value.replace(/\./g, "\\.");
+		value = value.replace(/\^/g, "\\^");
+		value = value.replace(/\//g, "\/");
+
+		return value;
 	}
 }

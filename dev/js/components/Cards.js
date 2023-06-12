@@ -2,11 +2,11 @@ export default class Cards {
 	config_ () {
 		return {
 			name : "cards",
-			share : [ "nav" ]
 		}
 	}
 
-	card () {}
+	card () {
+	}
 
 	$start () {
 		//console.log(this.banner.markup());

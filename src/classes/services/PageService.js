@@ -1,76 +1,39 @@
-import CommonServices from "./CommonServices.js";
+import Services from "./Services.js";
 
 /**
 * @namespace Services
 *
-* reads and executes a page
-*
-* author: Isaac Astley <isaacastley@live.com>
+* author: <isaacastley@live.com
 */
-export default class PageService extends CommonServices {
-	constructor ({ pages, config, provider }) {
+export default class PageService extends Services {
+	constructor ({ pages, reservoir, config, componentService }) {
 		super();
-
-		// instances
-		this.config = config;
-		this.provider = provider;
 
 		// static
 		this.pages = pages;
+		this.reservoir = reservoir;
+		this.config = config;
 		this.currentRoute = window.location.pathname;
-
-        //dynamic
-        this.match = false;
-        this.queries = new Map();
+		//this.currentRoute = "/profile/isaac/2135";
+		this.componentService = componentService;
 
 		// kickoff
 		this.#pages();
 
-		/**
-		* only executes once the page 
-		* has been matched
-		*/
-		if (this.page && this.match) {
-			const pageProv = this.provider.page({ 
-				page : this.page, 
-				configProps : this.config.get(),
-				components : this.components
-			});
-
-			/**
-			* this is extremely important
-			* this provides the entire reservoir
-			*/
-			super.setHook("init", (callback) => {
-				callback && callback({
-					pageProv : pageProv
-				});
-			});
-
-			this.components = pageProv.getComponents();
-
-			this.page.prototype.route_ = this.#applyQueries.bind(this);
-
-			this.pageProvider = pageProv;
-
-			this.#execute(this.components);
+		if (this.page) {
+			this.#setMethods();
+			this.#add();
 		}
 	}
 
-	/**
-	* executes the page class
-	*
-	* @return {void}
-	*/
-	#execute (components) {
-		const componentKeys = Object.keys(components),
-			page = new this.page();
+	// -- protected methods
 
-		super.exec$(page);
+	#setMethods () {
+		this.page.prototype.route_ = this.#route.bind(this);
+	}
 
-		componentKeys.forEach(component => {
-			super.exec$(page[component]);
-		});
+	#route () {
+		return this.queries;
 	}
 
 	/**
@@ -93,15 +56,16 @@ export default class PageService extends CommonServices {
 	* @return {void}
 	 */
 	#watch (page, ...components) {
-        if (this.match) return;
+        if (this.match) return; 
 
-		this.config.read("pages", page);
 		this.components = components;
+
+		const config = this.config.read("pages", page);
 
 		this.#matchRoute(page);
 	}
 
-    /**
+	/**
     * directs to the appropriate route 
     * matching methods 
     *
@@ -127,7 +91,7 @@ export default class PageService extends CommonServices {
         });
 	}
 
-    /**
+	/**
     * performs a simple route match for routes
     * that do not have placeholder slugs
     *
@@ -183,42 +147,27 @@ export default class PageService extends CommonServices {
     }
 
 	/**
-	* applies the placeholder queries to
-	* the page class so that their values
-	* can be retrieved
-	*
-	* @return {object}
-	 */
-	#applyQueries () {
-		return this.queries;
-	}
-
-	// -- public methods
-
-	/**
-	* gets the full list of components
-	*
-	* @return {object}
-	*/
-	getComponents () {
-		return this.components;
-	}
-
-	/**
-	* attaches the list of current components
-	* globals and constants to this class
-	*
-	* @param {object} reservoir
-	* the reservoir object which contains all
-	* require-able content
+	* adds the current page and its components
+	* to the reservoir
 	*
 	* @return {void}
 	*/
-	attach (reservoir) {
-		const init = super.getHook("init");
+	#add () {
+		//this.reservoir.page = this.page;
+		this.reservoir.set("page", this.page);
 
-		init(({ pageProv }) => {
-			pageProv.passRequired(reservoir);
+		this.components.forEach(component => {
+			this.config.read("component", component);
+
+			this.reservoir.component
+		});
+
+		new this.componentService({ 
+			components : this.components,
+			reservoir : this.reservoir,
+			config : this.config
 		});
 	}
+
+	// -- public methods
 }

@@ -1,68 +1,66 @@
 // services
-import PageService from "./services/PageServices.js";
-import ConstantService from "./services/ConstantService.js"
+import PageService from "./services/PageService.js";
+import ComponentService from "./services/ComponentService.js";
+import ConstantService from "./services/ConstantService.js";
+import GlobalService from "./services/GlobalService.js";
 
 // config
-import Director from "./config/Director.js";
+import Config from "./config/Config.js";
 
 // provider
 import Provider from "./provider/Provider.js";
 
 export default class Archetype {
 	constructor () {
-		this.reservoir = {};
+		// static
+		this.config = new Config();
 
-		this.provider = new Provider();
+		// dynamic
+		//this.reservoir = {};
+		this.reservoir = new Map();
 
-		this.pages = this.#pages();
-
+		// functions
+		this.page = this.#pages();
 		this.globals = this.#globals();
-
 		this.constant = this.#constant();
 
 		this.#execute();
 	}
 
-	/**
-	* prepare and execute the page classes
-	*
-	* @return {void}
-	*/
 	#pages () {
 		if (!this.pages) return;
 
-		const pages = new PageService({ 
+		return new PageService({
 			pages : this.pages,
-			provider : this.provider,
-			config : new Director()
+			reservoir : this.reservoir,
+			config : this.config,
+			componentService : ComponentService
 		});
-
-		this.reservoir["components"] = pages.getComponents();
-
-		return pages;
 	}
 
 	#globals () {
+		return new GlobalService({
+			globals : this.globals,
+			reservoir : this.reservoir,
+			config : this.config
+		});
 	}
 
 	#constant () {
-		const constant = new ConstantService({
-			constant : this.constant,
-			provider : this.provider,
-			config : new Director(),
-			reservoir : this.reservoir
+		return new ConstantService({
+			constants : this.constant,
+			reservoir : this.reservoir,
+			config : this.config
 		});
-
-		return constant.get();
 	}
 
 	#execute () {
-		this.pages.attach(this.reservoir);
-		this.constant.attach(this.reservoir);
+		const provider = new Provider({ 
+			reservoir : this.reservoir,
+			config : this.config
+		});
 
-		//this.pages.execute();
-		//this.constant.execute();
-		//this.constant.init();
+		//console.log(this.reservoir);
 	}
 }
 

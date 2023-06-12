@@ -2,7 +2,12 @@ export default class Banner {
 	config_ () {
 		return {
 			name : "banner",
-			share : [ "cards" ]
+			//use : [
+				//"components/cards"
+			//]
+			//require : [
+				//"components/cards"
+			//]
 		};
 	}
 
