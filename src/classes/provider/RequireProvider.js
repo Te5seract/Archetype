@@ -11,12 +11,14 @@ export default class RequireProvider {
 		this.components = reservoir.get("components");
 		this.constants = reservoir.get("constants");
 		this.globals = reservoir.get("globals");
-		this.all = [ ...this.constants, ...this.globals ];
+		this.all = [];
 		this.provider = provider;
 		this.reservoir = reservoir;
 
-		this.page && this.all.concat([ "page", this.page ]);
-		this.components && this.all.concat(...this.components);
+		this.page && this.all.push([ "page", this.page ]);
+		this.components && this.all.push(...this.components);
+		this.constants && this.all.push(...this.constants);
+		this.globals && this.all.push(...this.globals);
 
 		// errros
 		this.errors = {
@@ -83,7 +85,11 @@ export default class RequireProvider {
 		require.forEach(dir => {
 			if (!dir.match(/\//g)) throw this.errors.dirError(this.currentConfig, dir); 
 
-			const { config, instance } = this.provider.getDir(dir),
+			const reqDir = this.provider.getDir(dir);
+
+			if (!reqDir) return;
+
+			const { config, instance } = reqDir,
 				{ type, name } = config;
 
 

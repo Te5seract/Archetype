@@ -20,14 +20,14 @@ import Observer from "./constants/Observer.js";
 import Helper from "./helpers/Helper.js";
 
 export default class Main extends Archetype {
-	constant (watch) {
-		watch(Navigation);
-		watch(Observer);
-	}
+	//constant (watch) {
+		//watch(Navigation);
+		//watch(Observer);
+	//}
 
-	globals (watch) {
-		watch(Helper);
-	}
+	//globals (watch) {
+		//watch(Helper);
+	//}
 
     pages (watch) {
         watch(Home, Banner, Cards);

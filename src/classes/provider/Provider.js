@@ -94,12 +94,14 @@ export default class Provider {
 			components = this.reservoir.get("components"),
 			globals = this.reservoir.get("globals");
 
-		constants.forEach(constant => {
-			const methods = Object.getOwnPropertyNames(constant.prototype),
-				constInstance = new constant();
+		if (constants) {
+			constants.forEach(constant => {
+				const methods = Object.getOwnPropertyNames(constant.prototype),
+					constInstance = new constant();
 
-			this.#$exec(constInstance, methods);
-		});
+				this.#$exec(constInstance, methods);
+			});
+		}
 
 		if (!page) return;
 

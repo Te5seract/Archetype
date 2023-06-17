@@ -27,7 +27,7 @@ export default class Home {
     }
 
 	$home () {
-		this.helper = new this.Helper();
+		//this.helper = new this.Helper();
 
 		//console.log(this.source_());
 	}

@@ -48,6 +48,8 @@ export default class Archetype {
 	}
 
 	#globals () {
+		if (!this.globals) return;
+
 		return new GlobalService({
 			globals : this.globals,
 			reservoir : this.reservoir,
@@ -56,6 +58,8 @@ export default class Archetype {
 	}
 
 	#constant () {
+		if (!this.constant) return;
+
 		return new ConstantService({
 			constants : this.constant,
 			reservoir : this.reservoir,

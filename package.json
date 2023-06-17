@@ -1,6 +1,6 @@
 {
     "name": "@te5seract/archetype",
-    "version": "2.0.0",
+    "version": "2.0.2",
     "description": "Incantation is a page scoping JS design pattern for development simplification.",
     "main": "src/main.js",
     "files": [
@@ -10,7 +10,8 @@
         "build": "npx webpack --config webpack.config.js",
         "dev": "npx webpack --watch --config webpack.config.js",
 		"sass" : "sass --watch ./dev/css/main.scss:build/styles.min.css",
-        "start": "npx webpack serve && npm run dev"
+        "start": "npx webpack serve && npm run dev",
+		"publish" : "npm publish build"
     },
     "author": "Isaac Astley",
     "license": "ISC",

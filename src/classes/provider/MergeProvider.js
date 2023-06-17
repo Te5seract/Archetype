@@ -11,11 +11,13 @@ export default class MergeProvider {
 		this.components = reservoir.get("components");
 		this.constants = reservoir.get("constants");
 		this.globals = reservoir.get("globals");
-		this.all = [ ...this.constants, ...this.globals ];
+		this.all = [];
 		this.provider = provider;
 
-		this.page && this.all.concat([ "page", this.page ]);
-		this.components && this.all.concat(...this.components);
+		this.page && this.all.push([ "page", this.page ]);
+		this.components && this.all.push(...this.components);
+		this.constants && this.all.push(...this.constants);
+		this.globals && this.all.push(...this.globals);
 
 		// errros
 		this.errors = {
@@ -84,7 +86,11 @@ export default class MergeProvider {
 	* @return {void}
 	*/
 	#stringMerge (item) {
-		const { config, instance } = this.provider.getDir(item),
+		const mrgDir = this.provider.getDir(item);
+
+		if (!mrgDir) return;
+
+		const { config, instance } = mrgDir,
 			{ name, type } = config,
 			methods = Object.getOwnPropertyNames(instance.prototype).filter(item => !item.match(/constructor|config_/));
 

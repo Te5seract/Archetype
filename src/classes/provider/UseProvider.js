@@ -13,12 +13,14 @@ export default class UseProvider {
 		this.components = reservoir.get("components");
 		this.constants = reservoir.get("constants");
 		this.globals = reservoir.get("globals");
-		this.all = [ ...this.constants, ...this.globals ];
+		this.all = [];
 		this.provider = provider;
 		this.reservoir = reservoir;
 
 		this.page && this.all.push([ "page", this.page ]);
 		this.components && this.all.push(...this.components);
+		this.constants && this.all.push(...this.constants);
+		this.globals && this.all.push(...this.globals);
 
 		// errros
 		this.errors = {
