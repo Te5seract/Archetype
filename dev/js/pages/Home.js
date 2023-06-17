@@ -1,16 +1,19 @@
 export default class Home {
     config_ () {
+		const { admin_slug } = this.env("config");
+
         return {
-			route : [ "/", "index.html" ],
+			//route : [ `${ admin_slug }/settings` ],
 			//route : [ "/profile/{name}", "/profile/{name}/{id}" ],
+			route : [ "/", "index.html" ],
 			use : [
 				"globals/Helper",
 				"constants/observer"
 			],
 
-			//require : [
-				//"constants/nav",
-			//],
+			require : [
+				"constants/nav",
+			],
 			//merge : [
 				////"components/banner"
 				//{ 
@@ -24,5 +27,8 @@ export default class Home {
     }
 
 	$home () {
+		this.helper = new this.Helper();
+
+		//console.log(this.source_());
 	}
 }

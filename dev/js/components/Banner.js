@@ -2,12 +2,6 @@ export default class Banner {
 	config_ () {
 		return {
 			name : "banner",
-			//use : [
-				//"components/cards"
-			//]
-			//require : [
-				//"components/cards"
-			//]
 		};
 	}
 
@@ -15,6 +9,6 @@ export default class Banner {
 		return `Hello`;
 	}
 
-	$start () {
+	$banner () {
 	}
 }

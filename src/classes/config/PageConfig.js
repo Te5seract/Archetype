@@ -7,7 +7,7 @@ import CommonConfig from "./CommonConfig.js";
 */
 
 export default class PageConfig extends CommonConfig {
-	constructor (page) {
+	constructor ({ instance : page, env }) {
 		super();
 
 		// static
@@ -18,6 +18,8 @@ export default class PageConfig extends CommonConfig {
 			noconfig : `Archetype Error: "${ this.name }" does not have a config_() method.`,
 			noroute : `Archetype Error: "${ this.name }" does not have a route property in the config_() method`
 		}
+
+		this.environment = env;
 
 		/**
 		* this is required for the super class
@@ -77,5 +79,12 @@ export default class PageConfig extends CommonConfig {
 	*/
 	get () {
 		return this.config();
+	}
+
+	env (name) {
+		const env = this.environment.get(name);
+		if (env) {
+			return env;
+		}
 	}
 }

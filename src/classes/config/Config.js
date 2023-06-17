@@ -9,11 +9,18 @@ import GlobalConfig from "./GlobalConfig.js";
 * author: <isaacastley@live.com>
 */
 export default class Config {
+	constructor (reservoir) {
+		this.reservoir = reservoir;
+	}
+
 	// -- public methods
 
 	read (type, instance) {
 		if (type.match(/page|pages/i)) {
-			const conf = new PageConfig(instance);
+			const conf = new PageConfig({ 
+				instance : instance, 
+				env : this.reservoir.get("env") 
+			});
 
 			this.conf = conf.get();
 		}

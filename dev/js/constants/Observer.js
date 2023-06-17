@@ -16,5 +16,6 @@ export default class Observer {
 	methodOne () {}
 
 	$start () {
+		//console.log(this.route_());
 	}
 }

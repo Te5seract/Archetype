@@ -1,5 +1,8 @@
 import "../archetype.min.js";
 
+// env
+import env from "./templates/dialogues.json" assert { type : "json" };
+
 // pages
 import Home from "./pages/Home.js";
 import About from "./pages/About.js";
@@ -31,6 +34,10 @@ export default class Main extends Archetype {
         watch(About);
 		watch(Documentation);
     }
+
+	env (set) {
+		set("config", env);
+	}
 }
 
 const main = new Main();

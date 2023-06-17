@@ -14,27 +14,18 @@ export default class PageService extends Services {
 		this.reservoir = reservoir;
 		this.config = config;
 		this.currentRoute = window.location.pathname;
-		//this.currentRoute = "/profile/isaac/2135";
+		//this.currentRoute = "/_admin/settings";
 		this.componentService = componentService;
 
 		// kickoff
 		this.#pages();
 
 		if (this.page) {
-			this.#setMethods();
 			this.#add();
 		}
 	}
 
 	// -- protected methods
-
-	#setMethods () {
-		this.page.prototype.route_ = this.#route.bind(this);
-	}
-
-	#route () {
-		return this.queries;
-	}
 
 	/**
 	* gets the pages method from the extended
@@ -153,8 +144,8 @@ export default class PageService extends Services {
 	* @return {void}
 	*/
 	#add () {
-		//this.reservoir.page = this.page;
 		this.reservoir.set("page", this.page);
+		this.reservoir.set("route", this.queries);
 
 		this.components.forEach(component => {
 			this.config.read("component", component);

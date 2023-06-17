@@ -107,6 +107,13 @@ export default class Provider {
 			pageInstance = new page();
 
 		this.#$exec(pageInstance, pageMethods);
+
+		components.forEach(component => {
+			const componentMethods = Object.getOwnPropertyNames(component.prototype),
+				componentInstance = new component();
+
+			this.#$exec(componentInstance, componentMethods);
+		});
 	}
 
 	// -- public methods

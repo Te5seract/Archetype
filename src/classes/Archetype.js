@@ -1,4 +1,5 @@
 // services
+import EnvironmentService from "./services/EnvironmentService.js";
 import PageService from "./services/PageService.js";
 import ComponentService from "./services/ComponentService.js";
 import ConstantService from "./services/ConstantService.js";
@@ -12,19 +13,27 @@ import Provider from "./provider/Provider.js";
 
 export default class Archetype {
 	constructor () {
-		// static
-		this.config = new Config();
-
 		// dynamic
-		//this.reservoir = {};
 		this.reservoir = new Map();
 
+		// static
+		this.reservoir.set("env", new Map());
+
 		// functions
+		this.env = this.#env();
+		this.config = new Config(this.reservoir);
 		this.page = this.#pages();
 		this.globals = this.#globals();
 		this.constant = this.#constant();
 
 		this.#execute();
+	}
+
+	#env () {
+		return new EnvironmentService({
+			env : this.env,
+			reservoir : this.reservoir
+		});
 	}
 
 	#pages () {

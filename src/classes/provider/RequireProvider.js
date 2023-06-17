@@ -13,6 +13,7 @@ export default class RequireProvider {
 		this.globals = reservoir.get("globals");
 		this.all = [ ...this.constants, ...this.globals ];
 		this.provider = provider;
+		this.reservoir = reservoir;
 
 		this.page && this.all.concat([ "page", this.page ]);
 		this.components && this.all.concat(...this.components);
@@ -29,10 +30,35 @@ export default class RequireProvider {
 
 	// -- private methods
 
+	/**
+	* sets methods on the current class
+	*/
+	#setMethods (instance) {
+		instance.prototype.route_ = this.#route.bind(this);
+		instance.prototype.source_ = this.#source.bind(this);
+	}
+
+	/**
+	* gets the route's dynamic slug values
+	*/
+	#route () {
+		return this.reservoir.get("route");
+	}
+
+	/**
+	* returns the reservoir to show what is available 
+	* in the current page's context
+	*/
+	#source () {
+		return this.reservoir;
+	}
+
 	#init () {
 		this.all.forEach(item => {
 			const instance = item[1],
 				type = instance.prototype.config_().type;
+
+			this.#setMethods(instance);
 
 			this.config.read(type, instance);
 
