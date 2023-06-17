@@ -16,8 +16,6 @@ export default class Archetype {
 		// dynamic
 		this.reservoir = new Map();
 
-		console.log(this);
-
 		// static
 		this.reservoir.set("env", new Map());
 

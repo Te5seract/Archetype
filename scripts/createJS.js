@@ -4,6 +4,20 @@ const fs = require("fs");
 * This file sets up the main.js for the developer environment
 */
 
+const homeContent = 
+`export default class Home {
+	config_ () {
+		return {
+			route : [ "/", "index.html" ],
+			name : "home"
+		}
+	}
+
+	$home () {
+		console.log(this);
+	}
+}`;
+
 if (!fs.existsSync("./dev/js")) {
 	console.log("No js directory found, creating now...");
 
@@ -23,6 +37,24 @@ if (!fs.existsSync("./dev/js")) {
 		}
 
 		console.log(">created: dev/js/pages");
+	});
+
+	fs.open("./dev/js/pages/Home.js", "as+", 0o666, err => {
+		if (err) {
+			console.log(err);
+			return;
+		}
+
+		console.log(">success: Created the Home.js file, now writing to file...");
+	});
+
+	fs.writeFile("./dev/js/pages/Home.js", homeContent, err => {
+		if (err) {
+			console.log(err);
+			return;
+		}
+
+		console.log(">success: Home.js is written! Continuing to other directories...");
 	});
 
 	fs.mkdir("./dev/js/globals", { recursive : true }, err => {
@@ -68,12 +100,17 @@ const content =
 // env
 
 // pages
+import Home from "./pages/Home.js";
 
 // globals
 
 // constants
 
-class Main extends Archetype {}
+class Main extends Archetype {
+	pages (watch) {
+		watch(Home);
+	}
+}
 
 const main = new Main();`;
 

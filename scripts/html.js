@@ -43,7 +43,7 @@ const content =
 		<p>Welcome to Archetype!</p>
 
 		<p>
-			Hot reloads are a bit clunky so they won't persist changes every time
+			Open the console and you should see ">Home" in the logs.
 		</p>
 	</body>
 	</html>`;
