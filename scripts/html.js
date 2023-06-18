@@ -1,4 +1,5 @@
-const fs = require("fs");
+//const fs = require("fs");
+import fs from "fs";
 
 /**
 * This file just creates a developer directory and adds an index.html to it

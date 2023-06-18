@@ -1,4 +1,4 @@
-const fs = require("fs");
+import fs from "fs";
 
 /**
 * This file sets up the main.js for the developer environment
@@ -19,7 +19,7 @@ const homeContent =
 }`;
 
 if (!fs.existsSync("./dev/js")) {
-	console.log("No js directory found, creating now...");
+	console.log(">building: No js directory found, creating now...");
 
 	fs.mkdir("./dev/js", { recursive : true }, err => {
 		if (err) {
@@ -64,6 +64,15 @@ if (!fs.existsSync("./dev/js")) {
 		}
 
 		console.log(">created: dev/js/globals");
+	});
+
+	fs.mkdir("./dev/js/components", { recursive : true }, err => {
+		if (err) {
+			console.log(err);
+			return;
+		}
+
+		console.log(">created: dev/js/components");
 	});
 
 	fs.mkdir("./dev/js/constants", { recursive : true }, err => {
